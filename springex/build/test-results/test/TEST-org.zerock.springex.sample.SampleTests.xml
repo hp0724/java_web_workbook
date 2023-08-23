@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="org.zerock.springex.sample.SampleTests" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-08-22T10:37:29" hostname="NOTEBOOK-VIVO" time="0.017">
+  <properties/>
+  <testcase name="testService()" classname="org.zerock.springex.sample.SampleTests" time="0.017"/>
+  <system-out><![CDATA[07:37:28  INFO [org.springframework.test.context.support.DefaultTestContextBootstrapper] Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+07:37:28  INFO [org.springframework.test.context.support.DefaultTestContextBootstrapper] Using TestExecutionListeners: [org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@6e28bb87, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@19f040ba, org.springframework.test.context.support.DependencyInjectionTestExecutionListener@72ab05ed, org.springframework.test.context.support.DirtiesContextTestExecutionListener@27e32fe4, org.springframework.test.context.event.EventPublishingTestExecutionListener@c3c4c1c]
+07:37:29  INFO [org.zerock.springex.sample.SampleTests] SampleService(sampleDAO=org.zerock.springex.sample.SampleDAO@63716833)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
