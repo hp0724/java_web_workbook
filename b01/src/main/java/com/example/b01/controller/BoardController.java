@@ -1,13 +1,13 @@
 package com.example.b01.controller;
 
 import com.example.b01.domain.Board;
-import com.example.b01.dto.BoardDTO;
-import com.example.b01.dto.BoardListReplyCountDTO;
-import com.example.b01.dto.PageRequestDTO;
-import com.example.b01.dto.PageResponseDTO;
+import com.example.b01.dto.*;
 import com.example.b01.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.ui.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -17,18 +17,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.List;
 
 @Controller
 @RequestMapping("/board")
 @Log4j2
 @RequiredArgsConstructor
 public class BoardController {
+
+    @Value("${com.example.upload.path}")
+    private String uploadPath;
+
     private final BoardService boardService;
+
     @GetMapping("/list")
     public void list(PageRequestDTO pageRequestDTO,Model model){
 
-        PageResponseDTO<BoardListReplyCountDTO> responseDTO =
-                boardService.listWithReplyCount(pageRequestDTO);
+        PageResponseDTO<BoardListAllDTO> responseDTO = boardService.listWithAll(pageRequestDTO);
         log.info(responseDTO);
         model.addAttribute("responseDTO",responseDTO);
 
@@ -39,17 +47,21 @@ public class BoardController {
     }
     @PostMapping("/register")
     public String registerPost(@Valid BoardDTO boardDTO, BindingResult bindingResult, RedirectAttributes redirectAttributes){
-        log.info("board POST register");
 
-        if(bindingResult.hasErrors()){
+        log.info("board POST register.......");
+
+        if(bindingResult.hasErrors()) {
             log.info("has errors.......");
-            redirectAttributes.addFlashAttribute("errors",bindingResult.getAllErrors());
+            redirectAttributes.addFlashAttribute("errors", bindingResult.getAllErrors() );
             return "redirect:/board/register";
         }
+
         log.info(boardDTO);
 
-        Long bno =boardService.register(boardDTO);
-        redirectAttributes.addFlashAttribute("result",bno);
+        Long bno  = boardService.register(boardDTO);
+
+        redirectAttributes.addFlashAttribute("result", bno);
+
         return "redirect:/board/list";
     }
 
@@ -80,11 +92,41 @@ public class BoardController {
     }
 
     @PostMapping("/remove")
-    public String remove(Long bno, RedirectAttributes redirectAttributes){
+    public String remove(BoardDTO boardDTO, RedirectAttributes redirectAttributes){
+
+        Long bno = boardDTO.getBno();
         log.info("remove post.."+bno);
+
         boardService.remove(bno);
+
+        log.info(boardDTO.getFileNames());
+
+        List<String> fileNames = boardDTO.getFileNames();
+        if(fileNames!=null && fileNames.size()>0){
+            removeFiles(fileNames);
+        }
+
         redirectAttributes.addFlashAttribute("result","removed");
         return "redirect:/board/list";
+    }
+
+    public void removeFiles(List<String>files){
+        for (String fileName :files){
+            Resource resource = new FileSystemResource(uploadPath+ File.separator+fileName);
+            String resourceName =resource.getFilename();
+
+            try {
+                String contentType = Files.probeContentType(resource.getFile().toPath());
+                resource.getFile().delete();
+
+                if(contentType.startsWith("image")){
+                    File thumbnailFile = new File(uploadPath +File.separator+"s_"+fileName);
+                    thumbnailFile.delete();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }//end for
     }
 
 

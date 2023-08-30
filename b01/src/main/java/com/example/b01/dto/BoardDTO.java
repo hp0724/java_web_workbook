@@ -8,6 +8,7 @@
     import javax.validation.constraints.NotEmpty;
     import javax.validation.constraints.Size;
     import java.time.LocalDateTime;
+    import java.util.List;
 
     @Data
     @Builder
@@ -24,5 +25,7 @@
         private String writer;
         private LocalDateTime regDate;
         private LocalDateTime modDate ;
+
+        private List<String> fileNames;
 
     }
